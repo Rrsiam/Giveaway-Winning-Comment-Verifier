@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giveaway Comment Checker</title>
+<meta name="color-scheme" content="light dark">
+<script>(function(){var t;try{t=localStorage.getItem("theme")}catch(e){}if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t})()</script>
+<style>
+:root{color-scheme:light;--bg:#f4f6f8;--surface:#fff;--surface2:#eef1f5;--fg:#111827;--muted:#5d6879;--line:#dde2ea;--accent:#2f55d4;--accent-ink:#fff;--ok:#18794e;--warn:#b45309;--bad:#c62828;--shadow:0 1px 2px rgba(17,24,39,.05),0 8px 24px rgba(17,24,39,.06)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0e1116;--surface:#161b22;--surface2:#1e252e;--fg:#e8ebf0;--muted:#97a1b0;--line:#2a323d;--accent:#7a9bff;--accent-ink:#0e1116;--ok:#4cc38a;--warn:#f0b24a;--bad:#ff7b72;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI","Noto Sans Bengali","Noto Sans Devanagari","Nirmala UI","Vrinda",sans-serif}
+main{max-width:620px;margin:0 auto;padding:24px 18px 72px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:800}
+.ctl{display:flex;gap:8px}
+select,.icon{height:38px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);font:inherit;font-size:.9rem;cursor:pointer}
+select{padding:0 10px}option{background:var(--surface);color:var(--fg)}
+.icon{width:38px;display:grid;place-items:center;padding:0}
+.sun{display:none}[data-theme="dark"] .sun{display:block}[data-theme="dark"] .moon{display:none}
+h1{font-size:clamp(1.6rem,5vw,2.1rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 24px;max-width:56ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
+form{display:grid;gap:16px}
+label{display:grid;gap:6px;font-weight:600;font-size:.9rem}
+input,textarea{font:inherit;font-weight:400;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--fg);width:100%;transition:border-color .15s,box-shadow .15s}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+textarea{resize:vertical;min-height:92px}
+input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+select:focus-visible,.icon:focus-visible,#go:focus-visible,.card a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#go{font:inherit;font-weight:650;padding:13px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);cursor:pointer;transition:filter .15s}
+#go:hover{filter:brightness(1.08)}#go:disabled{opacity:.75;cursor:wait}
+#go:disabled::before{content:"";display:inline-block;width:14px;height:14px;margin-right:8px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.card{--c:var(--muted);margin-top:20px;padding:18px;border-radius:16px;background:color-mix(in srgb,var(--c) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 38%,var(--line))}
+.ok{--c:var(--ok)}.warn{--c:var(--warn)}.bad{--c:var(--bad)}
+.card>strong{display:flex;align-items:center;gap:10px;font-size:1.05rem;color:var(--c)}
+.card>strong::before{display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--c);color:var(--surface);font-size:.8rem;font-weight:800}
+.ok>strong::before{content:"✓"}.warn>strong::before{content:"!"}.bad>strong::before{content:"✕"}
+.card p{margin:8px 0 0}
+blockquote{margin:10px 0;padding:10px 14px;background:var(--surface2);border-left:3px solid var(--c);border-radius:8px;overflow-wrap:anywhere}
+.card a{display:inline-block;margin-top:6px;padding:8px 14px;border-radius:10px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;font-size:.9rem}
+.hint{color:var(--muted);font-size:.85rem}
+@media(max-width:480px){.panel{padding:16px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><span class="logo" aria-hidden="true">✓</span>
+<div class="ctl"><select id="lang" aria-label="Language"><option value="en">English</option><option value="bn">বাংলা</option><option value="hi">हिन्दी</option></select>
+<button type="button" class="icon" id="theme" aria-label="Toggle light and dark theme"><svg class="sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div></div>
+<h1 id="title"></h1><p class="sub" id="sub"></p>
+<section class="panel"><form id="f">
+<label><span id="l1"></span><input id="url" placeholder="https://youtube.com/shorts/..." required></label>
+<label><span id="l2"></span><input id="user"></label>
+<label><span id="l3"></span><textarea id="comment" rows="3" required></textarea></label>
+<button id="go"></button>
+</form></section>
+<div id="out" aria-live="polite"></div>
+</main>
+<script>
+const T={
+en:{title:"Giveaway comment checker",sub:"Paste a YouTube video or Shorts link and the winner's comment. Works with English, Bengali, Banglish, Hindi and Hinglish.",l1:"Video or Shorts link",l2:"Winner's username (optional)",l3:"Comment text",go:"Check comment",busy:"Scanning all comments… this can take a while",
+v:{verified:["Verified","This comment exists and the username matches."],likely:["Likely match","A very similar comment was found; the spelling differs (e.g. Banglish vs Bengali script)."],author_mismatch:["Comment found, different user","That text exists on the video, but someone else posted it."],not_found:["Not found","No matching comment was found."]},
+err:{},nfFull:"No matching comment exists in the full comments section.",all:n=>`Scanned all ${n} comments and replies.`,part:n=>`Scanned ${n} comments, then stopped before the end.`,open:"Open this comment on YouTube",m:{exact:"exact",partial:"partial",similar:"similar (spelling differs)"}},
+bn:{title:"গিভঅ্যাওয়ে কমেন্ট চেকার",sub:"ইউটিউব ভিডিও বা শর্টস লিংক আর বিজয়ীর কমেন্ট দিন। ইংরেজি, বাংলা, বাংলিশ, হিন্দি ও হিংলিশ কাজ করে।",l1:"ভিডিও বা শর্টস লিংক",l2:"বিজয়ীর ইউজারনেম (ঐচ্ছিক)",l3:"কমেন্টের লেখা",go:"কমেন্ট যাচাই করুন",busy:"সব কমেন্ট স্ক্যান হচ্ছে… সময় লাগতে পারে",
+v:{verified:["যাচাই হয়েছে","কমেন্টটি আছে এবং ইউজারনেম মিলেছে।"],likely:["সম্ভাব্য মিল","খুব মিল আছে এমন কমেন্ট পাওয়া গেছে; বানানে পার্থক্য আছে।"],author_mismatch:["কমেন্ট পাওয়া গেছে, কিন্তু অন্য ইউজার","এই লেখা ভিডিওতে আছে, তবে অন্য কেউ করেছেন।"],not_found:["পাওয়া যায়নি","মিলে এমন কমেন্ট পাওয়া যায়নি।"]},
+err:{"Enter a link and the comment text.": "লিংক ও কমেন্টের লেখা দিন।", "Input is too long.": "লেখা অনেক বড়।", "That doesn't look like a valid link.": "এটি সঠিক লিংক মনে হচ্ছে না।", "Enter a YouTube link.": "একটি ইউটিউব লিংক দিন।", "Couldn't find a video ID in that link.": "লিংকে ভিডিও আইডি পাওয়া যায়নি।", "Community posts aren't supported.": "কমিউনিটি পোস্ট সমর্থিত নয়।", "The comment has no readable text.": "কমেন্টে পড়ার মতো লেখা নেই।", "Couldn't read comments. The video may be private, or YouTube blocked this server.": "কমেন্ট পড়া যায়নি। ভিডিওটি প্রাইভেট হতে পারে, বা ইউটিউব এই সার্ভার ব্লক করেছে।", "No comments could be read. Comments may be off, or YouTube blocked this server.": "কোনো কমেন্ট পড়া যায়নি। কমেন্ট বন্ধ থাকতে পারে, বা ইউটিউব এই সার্ভার ব্লক করেছে।", "Network error.": "নেটওয়ার্ক ত্রুটি।", "Request failed.": "অনুরোধ ব্যর্থ হয়েছে।"},nfFull:"পুরো কমেন্ট সেকশনে মিলে এমন কোনো কমেন্ট নেই।",all:n=>`মোট ${n}টি কমেন্ট ও রিপ্লাই স্ক্যান হয়েছে।`,part:n=>`${n}টি কমেন্ট স্ক্যানের পর শেষ হওয়ার আগেই থেমেছে।`,open:"ইউটিউবে কমেন্টটি দেখুন",m:{exact:"হুবহু",partial:"আংশিক",similar:"কাছাকাছি (বানান ভিন্ন)"}},
+hi:{title:"गिवअवे कमेंट चेकर",sub:"YouTube वीडियो या Shorts लिंक और विजेता का कमेंट डालें। अंग्रेज़ी, बंगाली, बांग्लिश, हिंदी और हिंग्लिश कमेंट काम करते हैं।",l1:"वीडियो या Shorts लिंक",l2:"विजेता का यूज़रनेम (वैकल्पिक)",l3:"कमेंट का टेक्स्ट",go:"कमेंट जांचें",busy:"सभी कमेंट स्कैन हो रहे हैं… समय लग सकता है",
+v:{verified:["सत्यापित","यह कमेंट मौजूद है और यूज़रनेम मेल खाता है।"],likely:["संभावित मेल","बहुत मिलता-जुलता कमेंट मिला; वर्तनी अलग है (जैसे हिंग्लिश बनाम देवनागरी)।"],author_mismatch:["कमेंट मिला, पर यूज़र अलग है","यह टेक्स्ट वीडियो पर है, लेकिन किसी और ने पोस्ट किया है।"],not_found:["नहीं मिला","कोई मिलता-जुलता कमेंट नहीं मिला।"]},
+err:{"Enter a link and the comment text.": "लिंक और कमेंट का टेक्स्ट डालें।", "Input is too long.": "टेक्स्ट बहुत लंबा है।", "That doesn't look like a valid link.": "यह सही लिंक नहीं लगता।", "Enter a YouTube link.": "YouTube लिंक डालें।", "Couldn't find a video ID in that link.": "लिंक में वीडियो ID नहीं मिली।", "Community posts aren't supported.": "कम्युनिटी पोस्ट समर्थित नहीं हैं।", "The comment has no readable text.": "कमेंट में पढ़ने लायक टेक्स्ट नहीं है।", "Couldn't read comments. The video may be private, or YouTube blocked this server.": "कमेंट नहीं पढ़ पाए। वीडियो निजी हो सकता है, या YouTube ने इस सर्वर को ब्लॉक किया है।", "No comments could be read. Comments may be off, or YouTube blocked this server.": "कोई कमेंट नहीं पढ़ पाए। कमेंट बंद हो सकते हैं, या YouTube ने इस सर्वर को ब्लॉक किया है।", "Network error.": "नेटवर्क त्रुटि।", "Request failed.": "अनुरोध विफल रहा।"},nfFull:"पूरे कमेंट सेक्शन में ऐसा कोई कमेंट मौजूद नहीं है।",all:n=>`कुल ${n} कमेंट और रिप्लाई स्कैन किए गए।`,part:n=>`${n} कमेंट स्कैन करने के बाद अंत से पहले रुक गया।`,open:"YouTube पर कमेंट खोलें",m:{exact:"हूबहू",partial:"आंशिक",similar:"मिलता-जुलता (वर्तनी अलग)"}}};
+const CLS={verified:"ok",likely:"warn",author_mismatch:"warn",not_found:"bad"};
+let lang="en",last=null;const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function paint(){const t=T[lang];document.documentElement.lang=lang;
+$("title").textContent=t.title;$("sub").textContent=t.sub;$("l1").textContent=t.l1;$("l2").textContent=t.l2;$("l3").textContent=t.l3;
+$("go").textContent=t.go;show()}
+$("lang").onchange=e=>{lang=e.target.value;paint()};paint();
+$("theme").onclick=()=>{const n=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=n;try{localStorage.setItem("theme",n)}catch{}};
+function show(){const t=T[lang],out=$("out");
+if(!last){out.innerHTML="";return}
+if(last.error){out.innerHTML=`<div class="card bad"><strong>${esc(t.err[last.error]||last.error)}</strong></div>`;return}
+const d=last,v=t.v[d.verdict],m=d.match;
+const txt=d.verdict==="not_found"&&d.complete?t.nfFull:v[1];
+const scan=d.complete===null?"":`<p class="hint">${d.complete?t.all(d.scanned):t.part(d.scanned)}</p>`;
+const det=m?`<p><b>${esc(m.author)}</b> · ${esc(m.publishedAt)} · ${esc(m.likes)}</p><blockquote>${esc(m.text)}</blockquote><p>${t.m[m.matchType]}</p><a href="${esc(m.commentUrl)}" target="_blank" rel="noreferrer">${t.open}</a>`:"";
+out.innerHTML=`<div class="card ${CLS[d.verdict]}"><strong>${v[0]}</strong><p>${txt}</p>${det}${scan}</div>`}
+$("f").onsubmit=async e=>{e.preventDefault();
+$("go").disabled=true;$("go").textContent=T[lang].busy;last=null;show();
+try{const r=await fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({url:$("url").value,username:$("user").value,comment:$("comment").value})});
+const d=await r.json();last=r.ok?d:{error:d.error||"Request failed."}}
+catch{last={error:"Network error."}}
+$("go").disabled=false;paint()};
+</script>
+</body>
+</html>
