@@ -13,13 +13,9 @@ A web app that checks whether a giveaway winner's comment really exists on a You
 
 > **Note:** The app uses the unofficial `youtube-comment-downloader` library instead of the official YouTube API. This is against YouTube's terms of service and can stop working when YouTube changes its pages. Use it for personal checking and testing.
 
-## Live Demo
-
-**Live link:** https://your-demo-link-here *(replace with your deployed link)*
+## How to Run
 
 **Run locally:** http://localhost:5000 after following the steps below.
-
-## How to Run
 
 **Requirements:** Python 3.9 or newer and an internet connection.
 
